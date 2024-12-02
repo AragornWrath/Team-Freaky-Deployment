@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OOTGC.com</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'home/home.css' %}"/>
+    </head>
+    <body>
+        {% if logged_out %}
+        <div class="header">
+            <h class="project-title">Out of the Group Chat</h>
+            <br/>
+            {% load static %}
+            <img src= "{% static 'home/images/roadtrip.jpg' %}" class="header-pic">
+            <div class="authentication">
+                Register:
+                <form action="register/" method="post" enctype="application/x-www-form-urlencoded">{% csrf_token %}
+                    <label>Username:
+                        <input type="text" name="username" class="auth-text-box"/>
+                    </label>
+                    </br>
+                    <label>Password:&nbsp;
+                        <input type="text" name="password" class="auth-text-box"/>
+                    </label>
+                    <input type="submit" value="Post">
+                </form>
+            
+                Login:
+                <form action="login/" method="post" enctype="application/x-www-form-urlencoded">
+                    {% csrf_token %}
+                    <label>Username:
+                        <input type="text" name="username" class="auth-text-box"/>
+                    </label>
+                    <br/>
+                    <label>Password:&nbsp;
+                        <input type="password" name="password" class="auth-text-box"/>
+                    </label>
+                    <input type="submit" value="Post">
+                </form>
+            {% else %}
+            <h1>Hello {{username}}</h1>
+                <form action="register_trip/" method="post" enctype="application/x-www-form-urlencoded">
+                    {% csrf_token %}
+                    <label>Add Trip:
+                        <div class="authentication"/>
+                            <input type="text" name="trip_register" class="register-trip" placeholder="Trip Name"/>
+                        </div>
+                    </label>
+                    <br/>
+                </form>
+            {% endif %}
+                Logout:
+                <form action="logout/" method="post" enctype="application/x-www-form-urlencoded">
+                    {% csrf_token %}
+                    <input type="submit" value="Logout">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/home.css' %}"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOTGC.COM</title>
+</head>
+<body>
+    <h1>Hello {{user_name}}</h1>
+    Logout:
+    <form action="logout/" method="post" enctype="application/x-www-form-urlencoded">
+    {% csrf_token %}
+    <input type="submit" value="Logout">
+</body>
+</html>

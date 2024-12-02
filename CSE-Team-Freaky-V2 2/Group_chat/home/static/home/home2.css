@@ -1,0 +1,108 @@
+.header{
+    border-bottom-style: solid;
+    border-width: 1px;
+    /* margin: 20px; */
+    padding-left: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 20px;
+}
+
+.account-button{
+    border-style: none;
+    padding:10px;
+    border-radius: 10px;
+    background-color: rgb(44, 144, 237);
+}
+
+.account-button:hover{
+    background-color: rgb(27, 116, 199);
+}
+
+
+.account{
+    border-radius: 30px;
+    margin-right: 0px;
+    display: flex;
+    position: relative;
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    /* padding: 50px; */
+}
+
+.person{
+    padding: 0px;
+    height: 30px;
+}
+.down_arrow{
+    padding-left: 0px;
+    height: 30px;
+    width: 30px;
+}
+
+body{
+    background-color: white;
+}
+
+.collage{
+    margin-left: 20px;
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 20px;
+    column-gap: 20px;
+}
+
+.card{
+    border-radius: 10px;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card-title{
+    margin: 10px;
+    font-size: 20px;
+}
+
+.card-image{
+    max-width: 500px;
+    object-fit: fill;
+}
+
+.footer{
+    border-top-style: solid;
+    border-top-width: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
+
+.slogan{
+    padding: 30px;
+    font-size: 30px;
+}
+
+.dropdown-show{
+    display: block;
+    position: relative;
+    float: right;
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+    margin-top: -16px;
+}
+.dropdown-show a{
+    border-style: solid;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.dropdown-hidden{
+    display: none;
+}

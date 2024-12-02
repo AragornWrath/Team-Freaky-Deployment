@@ -1,0 +1,8 @@
+pymongo
+Django==5.1.2
+bcrypt
+channels
+daphne
+pillow~=10.4.0
+moviepy~=1.0.3
+opencv-python~=4.10.0.84

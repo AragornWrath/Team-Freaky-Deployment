@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+      - type: bind
+        source: ./db.sqlite3
+        target: /root/db.sqlite3
+  mongo:
+    image: mongo:4.2.5
+
+volumes:
+  user-data:

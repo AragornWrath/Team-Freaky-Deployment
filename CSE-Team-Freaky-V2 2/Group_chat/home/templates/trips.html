@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OOTGC.com</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'home/trips.css' %}"/>
+        <script src="{% static 'home/trips.js' %}"></script>
+    </head>
+    <body>
+        {% csrf_token %}
+        <div class="header">
+            <div class="header-container">
+            <h1>My Trips</h1>
+            <button class="add-trip-button" onclick="addTripPopUp()">Add Trip +</button>
+            </div>
+            <button class="account-button" onclick="dropdown()">
+                <div class="account">
+                    <img class="person" src="{% static 'home/icons/account.svg' %}">
+                    <img class="down_arrow" src="{% static 'home/icons/down_arrow.svg' %}">
+                </div>
+            </button>
+        </div>
+        <div id="dropdown" class="dropdown-hidden">
+            <a href="/">Home</a>
+            <a href="/logout/">Logout</a>
+        </div>
+        <div id="tripsTable" class="trips-table">
+            {% for trip in trips %}
+            <div class="trip">
+                <div class="trip-header">
+                    {% load trip_tags %}
+                    <b class="trip-title">{% tripName trip %}</b>
+                    <div hidden>{% tripID trip %}</div>
+                    <!-- <input type="date"> -->
+                </div>
+                {% load trip_tags %}
+                <b class="trip-destination">{% tripDestination trip %}</b>
+                <form action="/media-uploads/{% tripID trip %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label class="add-trip-label">Add Your Trip Photos!:</label>
+                    <input type="file" name="upload" class="add-trip-label">
+                    <button id="submit-photo-button" type="submit" value="Upload" class ="add-trip-label" onclick="updateGallery()">Upload</button>
+                    <input type="text" value="{% tripID trip%}" readonly hidden>
+                    <a href="/trips/{% tripID trip %}">Go To Trip Page</a>
+                </form>
+                <div id="Gallery" class="gallery">
+                        {% getImagePaths trip as imagePaths %}
+                        {% for imagePath in imagePaths %}
+                        <img width='100' class="photo" src="{% static imagePath %}" >
+                        {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            <div id="addTripCard" class="dropdown-hidden">
+                <b>Trip Name:</b>
+                <input id="trip-name-text-box" class="addTripTextBox" type="text">
+                <b>Destination:</b>
+                <input id="trip-destination-text-box" class="addTripTextBox" type="text">
+                <!-- <b>Date:</b> -->
+                <!-- <input class="addTripTextBox" type="date"> -->
+                <button id="submit-trip-button" class="done" onclick="addTrip()">&#10003;</button>
+            </div>
+        </div>
+    </body>
+</html>
