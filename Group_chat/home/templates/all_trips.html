@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OOTGC.com</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'home/all_trips.css' %}"/>
+        <script src="{% static 'home/all_trips.js' %}"></script>
+    </head>
+    <body onload="welcome();">
+        {% csrf_token %}
+        <div class="page">
+        <div class="header">
+            <h1 class="title">Travel Collection</h1>
+            <button class="account-button" onclick="dropdown()">
+                <div class="account">
+                    <img class="person" src="{% static 'home/icons/account.svg' %}">
+                    <img class="down_arrow" src="{% static 'home/icons/down_arrow.svg' %}">
+                </div>
+            </button>
+        </div>
+        <div id="dropdown" class="dropdown-hidden">
+            <a href="/">Home</a>
+            <a href="/logout/">Logout</a>
+        </div>
+        <div class="trips-table">
+            {% for trip in trips%}
+            <div class="trip">
+                <div class="trip-header">
+                    {% load trip_tags %}
+                    <b class="trip-title">{% tripName trip%}</b>
+                </div>
+                {% load trip_tags %}
+                <b class="trip-destination">{% tripDestination trip%}</b>
+                <b class="username">user: {% tripUsername trip%}</b>
+                <div class="likes">
+                    <button id="likeButton_{% tripID trip%}" class="like-button-{% checkLikeStatus trip username%}" onclick="likeButton( '{% tripID trip%}' )">
+                        <img id="likeButtonImage"class="like-button-unclicked-image" src="{% checkLikeStatusIcon trip username%}">
+                    </button>
+                    <button id="number-of-likes_{% tripID trip%}" class="number-of-likes" onclick="viewLikes( '{% tripID trip%}' )">{% tripLikes trip %}</button>
+                </div>
+                <div id="Gallery" class="gallery">
+                    {% getImagePaths trip as imagePaths %}
+                    {% for imagePath in imagePaths %}
+                    <img width='100' class="photo" src="{% static imagePath %}" >
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="likes_popup" class="likes-list-hidden"> </div>
+        </div>
+    </body>
+</html>

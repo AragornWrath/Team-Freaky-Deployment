@@ -1,0 +1,205 @@
+.header{
+    border-bottom-style: solid;
+    border-width: 1px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 20px;
+}
+
+.account-button{
+    border-style: none;
+    padding:10px;
+    border-radius: 10px;
+    background-color: rgb(44, 144, 237);
+}
+
+.account-button:hover{
+    background-color: rgb(27, 116, 199);
+}
+
+
+.account{
+    border-radius: 30px;
+    margin-right: 0px;
+    display: flex;
+    position: relative;
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    /* padding: 50px; */
+}
+
+.person{
+    padding: 0px;
+    height: 30px;
+}
+.down_arrow{
+    padding-left: 0px;
+    height: 30px;
+    width: 30px;
+}
+
+.dropdown-show{
+    display: block;
+    position: relative;
+    float: right;
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+    margin-top: -16px;
+}
+.dropdown-show a{
+    border-style: solid;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.dropdown-hidden{
+    display: none;
+}
+
+
+.trips-table{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    row-gap: 40px;
+    column-gap: 0px;
+    margin-left: 55px;
+    margin-top: 60px;
+}
+
+.trip{
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    min-height: 500px;
+    margin: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.trip-header{
+    border-bottom-style: solid;
+    display: block;
+}
+
+.trip-title{
+    font-size: xx-large;
+    display: inline-block;
+    padding: 20px;
+}
+
+.trip-destination{
+    font-size: x-large;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.username{
+    margin: 10px;
+}
+
+.like-button-unclicked{
+    height: 40px;
+    width: 40px;
+    border-style: none;
+    background-color: white;
+}
+
+.like-button-clicked{
+    height: 40px;
+    width: 40px;
+    border-style: none;
+    background-color: white;
+}
+
+.likes{
+    display: flex;
+    align-items: center;
+    /* margin-top: 320px;
+    margin-left: 280px; */
+}
+.like-button-unclicked-image{
+    height: 40px;
+    width: 40px;
+}
+
+.like-button-unclicked-image:hover{
+    cursor: pointer;
+}
+
+.like-button-clicked-image{
+    height: 40px;
+    width: 40px;
+}
+
+.like-button-clicked-image:hover{
+    cursor: pointer;
+}
+
+.number-of-likes{
+    font-size: x-large;
+    margin-left: 15px;
+    background-color: white;
+    border-style: none;
+}
+
+.number-of-likes:hover{
+    cursor: pointer;
+}
+
+.page{
+    position:relative;
+}
+
+.likes-list{
+    position:fixed;
+    background-color: orange;
+    padding-right: 20px;
+    /* width: 200px;
+    height: 200px; */
+    z-index: 100;
+    top: 0vh;
+    right: 0vw;
+    bottom: 0vh;
+    left: 90vw;
+    margin: 10px;
+}
+
+.likes-list-hidden{
+    display: none;
+}
+
+.close-likes{
+    background-color: red;
+    border-radius: 10px;
+    border-style: none;
+    position: fixed;
+    padding: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-left: 10px;
+    bottom: 2vh;
+    right: 1vw;
+}
+
+.close-likes:hover{
+    cursor: pointer;
+    background-color: rgb(150, 5, 5);
+}
+
+#gallery {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: auto auto auto;
+    overflow-x: auto;
+  }
+
+.photo {
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    font-size: 30px;
+    text-align: center;
+  }

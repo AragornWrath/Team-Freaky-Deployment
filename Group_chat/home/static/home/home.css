@@ -1,0 +1,36 @@
+body{
+    background-color: rgb(116, 185, 246);
+}
+
+.header-pic{
+    position: absolute;
+    background-size: auto;
+    max-width: 10%;
+}
+
+.project-title{
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.authentication{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-text-box{
+    border-radius: 10px;
+    border-style: solid;
+    border-color: black;
+    padding: 10px;
+}
+
+.register-trip{
+    border-radius: 10px;
+    border-style: solid;
+    border-color: black;
+    padding: 10px;
+    justify-content: center;
+}

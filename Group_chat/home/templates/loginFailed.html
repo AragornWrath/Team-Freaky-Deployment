@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>OOTGC.com</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'home/auth.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'home/loginFailed.css' %}"/>
+    </head>
+    <body>
+        <div class="auth">
+            <form action="/login/" method="post" enctype="application/x-www-form-urlencoded">
+                {% csrf_token %}
+                <label class="auth-label">Username:
+                    <input type="text" name="username" class="auth-text-box"/>
+                </label>
+                <br/>
+                <label class="auth-label">Password:&nbsp;
+                    <input type="password" name="password" class="auth-text-box"/>
+                </label>
+                <br/>
+                <button class="auth-button" type="submit">Login</button>
+                <div class="error-message">Username or Password incorrect</div>
+            </form>
+        </div>
+        
+    </body>
+</html>
