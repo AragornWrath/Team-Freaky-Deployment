@@ -1,0 +1,32 @@
+services:
+  nginxrevproxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    env_file: ".aenv"
+    restart: always
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+  db:
+    restart: always
+    image: 'jc21/mariadb-aria:latest'
+    env_file: ".dbenv"
+    volumes:
+      - ./mysql:/var/lib/mysql
+  ootgc:
+    build: .
+    restart: always
+    ports:
+      - '8080:8080'
+    volumes:
+      - type: bind
+        source: ./db.sqlite3
+        target: /root/db.sqlite3
+  mongo:
+    image: mongo:4.2.5
+    restart: always
+volumes:
+  user-data:
