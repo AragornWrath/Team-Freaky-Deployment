@@ -21,7 +21,13 @@ import os
 from PIL import Image
 from PIL import ImageFile
 from io import BytesIO
-
+#ip rate limiting
+from ipware import get_client_ip
+from datetime import datetime
+from threading import Lock
+banned_ips = {}
+ip_requests = {}
+mutex = Lock()
 
 db = MongoClient("mongo")
 collection = db['users']
@@ -32,8 +38,106 @@ messages = collection['messages']
 #{'username': username, 'tripname': tripname, 'date': date}
 
 # Create your views here.
+def getIP(request):
+    ip, _ = get_client_ip(request)
+    return ip
+
+
+def rateIP(request):
+    REQUESTS_LIMIT = 50
+    REQUEST_INTERVAL = 10 #seconds
+    TIMEOUT_LENGTH = 30 #seconds
+    ip = getIP(request)
+    ip_data = ip_requests.get(ip, [0, datetime.now()])
+    number_of_requests = ip_data[0]
+    time_of_request = ip_data[1]
+    print(number_of_requests)
+
+    if number_of_requests >= REQUESTS_LIMIT:
+        print("number of requests is greater!")
+        banned_time = banned_ips.get(ip, datetime.now())
+        time_difference = getTime(banned_time)
+        if time_difference < TIMEOUT_LENGTH:
+            banned_ips[ip] = banned_time
+            return False
+        else:
+            banned_ips.pop(ip, None)
+            ip_requests[ip] = [1, datetime.now()]
+            return True
+    else:
+        time_difference = getTime(time_of_request)
+        if time_difference > REQUEST_INTERVAL:
+            ip_requests[ip] = [1, datetime.now()]
+            return True
+        else:
+            print("number of requests: ", number_of_requests, flush=True)
+            ip_requests[ip] = [number_of_requests + 1, time_of_request]
+            return True
+
+def getTime(datetime_object):    
+    seconds_difference = 0
+    now = datetime.now()
+    SECONDS_IN_YEAR = 31536000
+    SECONDS_IN_DAY = 86400
+    SECONDS_IN_HOUR = 3600
+    SECONDS_IN_MINUTE = 60
+    
+    now_year = now.year
+    now_month = now.month
+    now_day = now.day
+    now_hour = now.hour
+    now_minute = now.minute
+    now_second = now.second
+
+    now_month_seconds = monthSeconds(now_month)
+
+    given_year = datetime_object.year
+    given_month = datetime_object.month
+    given_day = datetime_object.day
+    given_hour = datetime_object.hour
+    given_minute = datetime_object.minute
+    given_second = datetime_object.second
+
+    given_month_seconds = monthSeconds(given_month)
+
+    years = now_year - given_year
+    days = now_day - given_day
+    hours = now_hour - given_hour
+    minutes = now_minute - given_minute
+    seconds = now_second - given_second
+
+    months_seconds_difference = now_month_seconds - given_month_seconds
+
+    seconds_difference += years * SECONDS_IN_YEAR
+    seconds_difference += months_seconds_difference
+    seconds_difference += days * SECONDS_IN_DAY
+    seconds_difference += hours * SECONDS_IN_HOUR
+    seconds_difference += minutes * SECONDS_IN_MINUTE
+    seconds_difference += seconds
+    return seconds_difference
+
+
+
+def monthSeconds(month):
+    SECONDS_31_DAYS = 2678400
+    SECONDS_30_DAYS = 2592000
+    SECONDS_FEBRUARY = 2419200
+    days31 = [1, 3, 5, 7, 8, 10, 12]
+    if month in days31:
+        return month * SECONDS_31_DAYS
+    elif month == 2:
+        return month * SECONDS_FEBRUARY
+    else:
+        return month * SECONDS_30_DAYS
+
+
 
 def view_likes(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     print("\n\n******response******\n\n")
     print(request, flush=True)
     decoded_body = json.loads(request.body.decode())
@@ -122,6 +226,12 @@ def add_like(request: HttpRequest):
 
 
 def all_trips(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
+    
     token = 'NULL'
     if ('token' in request.COOKIES) :
         token = request.COOKIES['token']
@@ -149,6 +259,11 @@ def all_trips(request: HttpRequest):
 
 #TODO: GET USERNAME 
 def index_trips(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     # print("\n\n***REQUEST START***\n")
     # print(request)
     # print("\n***REQUEST END***\n\n")
@@ -179,6 +294,11 @@ def index_trips(request: HttpRequest):
     return render(request, 'trips.html', context)
 
 def add_trip(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     # print("\n\n***REQUEST START***\n")
     # print(request)
     # print("\n***REQUEST END***\n\n")
@@ -226,6 +346,13 @@ def add_trip(request: HttpRequest):
     return JsonResponse(response)
 
 def index(request: HttpRequest):
+    #rate limiting
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
+    #rate limiting end
     messages_list = []
     messages_cursor = messages.find({})
     for message in messages_cursor:
@@ -250,6 +377,11 @@ def index(request: HttpRequest):
     return render(request, "index2.html", context)
 
 def register(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     if request.method == 'POST' :
         print(request)
         body = request.body
@@ -281,6 +413,11 @@ def register(request: HttpRequest):
     return HttpResponseRedirect('/')
 
 def login(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     invalid = False
     print("LOGIN")
     if request.method == 'POST' :
@@ -327,7 +464,11 @@ def invalidRegister() :
     return redirect
 
 def logout (request: HttpRequest) :
-    
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     token = request.COOKIES['token']
     user = findUser(token)
     if user != None :
@@ -347,6 +488,12 @@ def findUser(token) :
     return None
 
 def uploadImage(request: HttpRequest, trip_id) :
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
+    
     print("***trip_id***")
     print(trip_id, flush=True)
     #   Outline
@@ -413,6 +560,11 @@ def uploadImage(request: HttpRequest, trip_id) :
 #     return 
 
 def load_trip_by_id(request,trip_id):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     # Generates a new page for each individual trip.
 
     #Unfinished.
@@ -460,12 +612,27 @@ def login2(request: HttpRequest):
 
 
 def serveRegister(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     return render(request, "register.html")
 
 def serveLogin(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     return render(request, "login.html")
 
 
 def serveLoginFailed(request: HttpRequest):
+    mutex.acquire()
+    allowed_request = rateIP(request)
+    mutex.release()
+    if not allowed_request:
+        return JsonResponse({'error': 'Too Many Requests'}, status=429)
     return render(request, "loginFailed.html")
 
