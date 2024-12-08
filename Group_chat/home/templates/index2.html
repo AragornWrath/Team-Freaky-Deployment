@@ -4,7 +4,7 @@
         <title>OOTGC.com</title>
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'home/home2.css' %}"/>
-        <script src="{% static 'home/menu.js' %}"></script>
+        <script src="/static/home/menu.js?v=12345"></script>
     </head>
     <body onload="welcome();">
         {% csrf_token %}
