@@ -5,6 +5,9 @@ from pymongo import MongoClient
 from asgiref.sync import async_to_sync
 import html
 
+import time
+import asyncio
+
 db = MongoClient("mongo")
 collection = db['users']
 accounts = collection['accounts']
@@ -91,19 +94,47 @@ class SchemeConsumer(AsyncWebsocketConsumer):
         user_message = scheme_data_json.get('message', '')
         user_message_dict = {'message': html.escape(user_message), 'username': self.username}
         
+        user_time = scheme_data_json.get('time', '')
+        if user_time.isnumeric():
+            int_user_time = int(user_time)
+            for i in range(int_user_time, 0, -1):
+                time_dict = {'message': str(i), 'username': "you will see " + self.username + "'s message in"}
+
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        "type": 'send_timer',
+                        "message": json.dumps(time_dict),
+                        "sender": self.channel_name,
+                    }
+                )
+                await self.send(text_data=json.dumps(time_dict))
+                await asyncio.sleep(1)
+                print("counting", flush=True)
+
+
         messages.insert_one(user_message_dict.copy())
+
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 "type": 'send_message',
-                "message": json.dumps(user_message_dict),
+                "message2": json.dumps(user_message_dict),
             }
         )
 
     async def send_message(self, event):
-        message = event["message"]
+        print("MADE IT", flush=True)
+        message = event["message2"]
+        print("message: ", message, flush=True)
         await self.send(text_data=message)
+    
+    async def send_timer(self, event):
+        print(event, flush=True)
+        if event['sender'] != self.channel_name:
+            message = event["message"]
+            await self.send(text_data=message)
 
 
 

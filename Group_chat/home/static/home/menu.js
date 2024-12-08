@@ -21,7 +21,7 @@ function welcome(){
 }
 
 function initWS(){
-    let url = 'wss://' + window.location.host + '/scheme'
+    let url = 'ws://' + window.location.host + '/scheme'
     socket = new WebSocket(url)
 
     socket.onmessage = function (ws_message) {
@@ -56,6 +56,11 @@ function sendChat(){
     const chatTextBox = document.getElementById("chat-text-box");
     const message = chatTextBox.value;
     chatTextBox.value = "";
-    socket.send(JSON.stringify({'message': message}))
+
+    const timeBox = document.getElementById("time");
+    const time = timeBox.value;
+    timeBox.value = "";
+
+    socket.send(JSON.stringify({'message': message, 'time': time}))
     chatTextBox.focus();
 }
