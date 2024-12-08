@@ -21,7 +21,7 @@ function welcome(){
 }
 
 function initWS(){
-    let url = 'ws://' + window.location.host + '/scheme'
+    let url = 'wss://' + window.location.host + '/scheme'
     socket = new WebSocket(url)
 
     socket.onmessage = function (ws_message) {
