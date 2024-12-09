@@ -15,5 +15,7 @@ This feature enables users to receive email alerts when there are too many incor
 
 
 **In order to use this feature:**
-Create an account with a valid username, password, and email address. Go to the login page. Try to login with your correct name but incorrect password 5 times. On the fifth time an email will be sent to the email address associated with your account alerting you of the potential security risk on your account.
+Create an account with a valid username, password, and email address. Go to the login page. Try to login with your correct name but incorrect password 5 times. On the fifth time an email will be sent to the email address associated with your account alerting you of the potential security risk on your account. Please be sure to check your spam folder, as the email may go there!
+
+- sincerely, The Freaks
 
