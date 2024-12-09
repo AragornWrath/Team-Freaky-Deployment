@@ -4,18 +4,9 @@
         <title>OOTGC.com</title>
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'home/home2.css' %}"/>
-        <script src="{% static 'home/menu.js' %}"></script>
+        <script src="/static/home/menu.js?v=12345"></script>
     </head>
-    <body>
-        <!-- <script type="text/javascript">
-            let url = 'ws://' + window.location.host + '/ws/socket-server'
-            const socket = new WebSocket(url)
-
-            socket.onmessage = function(e){
-                let data = JSON.parse(e.data)
-                console.log("Data:", data)
-            }
-        </script> -->
+    <body onload="welcome();">
         {% csrf_token %}
         <div class="header">
             <h1 class="title">OUT OF THE GROUPCHAT</h1>
@@ -35,7 +26,6 @@
         {% else %}
         <div id="dropdown" class="dropdown-hidden">
             <a href="/trips/">Trips</a>
-            <a href="/tasks/">Tasks</a>
             <a href="/all_trips/">All Trips</a>
             <a href="/logout/">Logout</a>
         </div>
@@ -69,8 +59,29 @@
         <div class="footer">
             <b class="slogan">Stop Dreaming -> Get Scheming</b>
         </div>
-        <div>
-            Hello!
+        <div class="chat">
+            <h>SCHEME WITH FRIENDS:</h>
+
+            <div id="chat-messages">
+                {% load trip_tags %}
+                {% for message in messages %}
+                    <div><b>{%getUsername message%}: {%getMessage message%}</b></div>
+                {% endfor %}
+            </div>
+
+            <div class="chat-form">
+                {% csrf_token %}
+                <hr>
+                <label>
+                    Chat:
+                    <input id="chat-text-box" type="text">
+                </label>
+                <label>
+                    UPLOAD TIME (Seconds (whole number)):
+                    <input id="time" type="text">
+                </label>
+                <button id="chat-button" onclick="sendChat()">Send</button>
+            </div>
         </div>
     </body>
 </html>

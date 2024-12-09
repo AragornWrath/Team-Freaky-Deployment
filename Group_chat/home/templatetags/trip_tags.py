@@ -45,9 +45,10 @@ def getImagePaths(trip):
     return trip.get("imagePaths", [])
 
 @register.simple_tag
-def getPeopleOnTheTrip(trip):
-    return trip.get("peopleOnTheTrip", [])
+def getMessage(message):
+    return message.get('message', '')
+
 
 @register.simple_tag
-def getTasks(trip):
-    return trip.get("tasks", [])
+def getUsername(message):
+    return message.get('username', 'Guest')
