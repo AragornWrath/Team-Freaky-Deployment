@@ -533,7 +533,7 @@ def add_task(request: HttpRequest, trip_id):
     
     return response
 
-    def index_tasks(request: HttpRequest):
+def index_tasks(request: HttpRequest):
     # print("\n\n***REQUEST START***\n")
     # print(request)
     # print("\n***REQUEST END***\n\n")
