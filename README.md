@@ -9,7 +9,8 @@ Team freaky so chill
 * Convert the mongo code to sqlite code
 
 # URL to Our Project
-*outofthegc.com
+outofthegc.com
+
 # Project part 3 object 3:
 # Email Security Notification Feature
 
