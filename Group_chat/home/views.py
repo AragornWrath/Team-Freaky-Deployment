@@ -29,6 +29,8 @@ accounts = collection['accounts']
 trips = collection['trips']
 pictures = collection['pictures']
 messages = collection['messages']
+tasks = collection['tasks']
+
 #{'username': username, 'tripname': tripname, 'date': date}
 
 # Create your views here.
@@ -169,7 +171,14 @@ def index_trips(request: HttpRequest):
     if username == 'NULL':
         return HttpResponseForbidden()
     
-    tripscontext = trips.find({'username': username})
+    tripscontext = list(trips.find({'username': username}))
+    print("THIS IS TRIPSCONTEXT")
+    print(tripscontext)
+    if len(tripscontext) == 0:
+        tripscontext=[]
+    secondhand_trips=list(trips.find({'peopleOnTheTrip': {'$in': [username]}}))
+    for trip2 in secondhand_trips:
+        tripscontext.append(trip2)
 
     context = {
         'trips' : tripscontext,
@@ -469,3 +478,89 @@ def serveLogin(request: HttpRequest):
 def serveLoginFailed(request: HttpRequest):
     return render(request, "loginFailed.html")
 
+def add_friend(request: HttpRequest, trip_id):
+    decoded_body = json.loads(request.body.decode())
+    friend_name = html.escape(decoded_body["friendName"])
+    response = HttpResponseRedirect('/trips/')
+    trip = trips.find_one({"tripID": trip_id})
+    print("THIS IS THE TRIP:",flush=True)
+    print(trip,flush=True)
+    
+    if trip == None:
+        return response
+    
+    # is friend registered/
+    registration=list(accounts.find({'username':friend_name}))
+    if len(registration)==0:
+        return response
+    
+    tripCopy = trip.copy()
+    peopleOnTheTrip = trip.get("peopleOnTheTrip", [])
+    peopleOnTheTripCopy = peopleOnTheTrip.copy()
+   
+    if friend_name not in peopleOnTheTripCopy:
+        peopleOnTheTripCopy.append(friend_name)
+        tripCopy["peopleOnTheTrip"] = peopleOnTheTripCopy
+        trips.replace_one(trip, tripCopy)
+    print("THIS IS THE NEW TRIP:",flush=True)
+    print(tripCopy, flush=True)
+    
+    return response
+def add_task(request: HttpRequest, trip_id):
+    decoded_body = json.loads(request.body.decode())
+    task_name = html.escape(decoded_body["task"])
+    response = HttpResponseRedirect('/trips/')
+    trip = trips.find_one({"tripID": trip_id})
+    print("THIS IS THE TRIP:",flush=True)
+    print(trip,flush=True)
+    
+    if trip == None:
+        return response
+    if len(task_name)==0:
+        return response
+    # add the appriopraiate username
+    task_name= task_name +"=>"+ request.COOKIES.get('username', None)
+    
+    tripCopy = trip.copy()
+    tasksOfTheTrip = trip.get("tasks", [])
+    tasksOfTheTripCopy = tasksOfTheTrip.copy()
+   
+    tasksOfTheTripCopy.append(task_name)
+    tripCopy["tasks"] = tasksOfTheTripCopy
+    trips.replace_one(trip, tripCopy)
+    print("THIS IS THE NEW TRIP:",flush=True)
+    print(tripCopy, flush=True)
+    
+    return response
+
+    def index_tasks(request: HttpRequest):
+    # print("\n\n***REQUEST START***\n")
+    # print(request)
+    # print("\n***REQUEST END***\n\n")
+    # print("\n\n***REQUEST BODY START***\n")
+    # print(request.body)
+    # print("\n\n***REQUEST END***\n\n")
+    #Getting the user's auth token
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
+    #If users auth token is not found in the db -> invalid request
+    username = 'NULL'
+    if user != None:
+        username = user['username']
+    if username == 'NULL':
+        return HttpResponseForbidden()
+    
+    tripscontext = list(trips.find({'username': username}))
+    print("THIS IS TRIPSCONTEXT")
+    print(tripscontext)
+    if len(tripscontext) == 0:
+        tripscontext=[]
+    secondhand_trips=list(trips.find({'peopleOnTheTrip': {'$in': [username]}}))
+    for trip2 in secondhand_trips:
+        tripscontext.append(trip2)
+    context = {
+        'trips' : tripscontext,
+    }
+    return render(request, 'tasks.html', context)
