@@ -59,6 +59,7 @@ function addTripToHTML(response){
     }
 }
 
+
 function createTripHTML(tripName, tripDestination){
     let html = '<div class="trip"> <div class="trip-header"> <b class="trip-title">' + tripName + '</b> </div> <b class="trip-destination">' + tripDestination + '</b>  </div>';
     return html;
@@ -136,4 +137,64 @@ function galleryItemHTML(messageJSON){
     return html;
 }
 
+//ADDING FRIENDS TO TRIP
+function addFriend(i, tripID){
+    console.log("ADD FRIEND IS CALLED ON JAVASCRIPT")
+    const friendNameTextBox = document.getElementById("add-friends-text-box"+i);
+    const friendName = friendNameTextBox.value;
+    friendNameTextBox.value = "";
+    console.log("FRIEND'S NAME ON JS:")
+    console.log(friendName)
+    console.log("TRIPID:")
+    console.log(tripID)
+
+
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            //implement this part
+            //addFriendToHTML(friendName);
+        }
+    }
+    const friendJSON = {"friendName": friendName};
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+    request.open("POST", "add-friend/"+tripID);
+    request.setRequestHeader("X-CSRFToken", csrftoken)
+    request.send(JSON.stringify(friendJSON));
+}
+
+
+function addTask(i, tripID){
+    console.log("ADD TASK IS CALLED ON JAVASCRIPT")
+    const taskNameTextBox = document.getElementById("add-task-text-box"+i);
+    const taskName = taskNameTextBox.value;
+    taskNameTextBox.value = "";
+
+
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            //implement this part
+            //addFriendToHTML(friendName);
+        }
+    }
+    const taskJSON = {"task": taskName};
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
+    request.open("POST", "add-task/"+tripID);
+    request.setRequestHeader("X-CSRFToken", csrftoken)
+    request.send(JSON.stringify(taskJSON));
+}
+
+//work on this
+function addFriendToHTML(friendName){
+    const friends = document.getElementById("friends-list");
+    friends.insertAdjacentHTML("afterbegin", friendItemHTML(friendName))
+}
+
+function friendItemHTML(friendName){
+    let html = '<li>'+friendName+'</li>';
+    return html
+}
 /* Model ajax from jesse*/
