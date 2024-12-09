@@ -52,3 +52,11 @@ def getMessage(message):
 @register.simple_tag
 def getUsername(message):
     return message.get('username', 'Guest')
+
+@register.simple_tag
+def getPeopleOnTheTrip(trip):
+    return trip.get("peopleOnTheTrip", [])
+
+@register.simple_tag
+def getTasks(trip):
+    return trip.get("tasks", [])
