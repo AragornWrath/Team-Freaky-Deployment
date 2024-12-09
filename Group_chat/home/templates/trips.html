@@ -26,15 +26,37 @@
         </div>
         <div id="tripsTable" class="trips-table">
             {% for trip in trips %}
+            {% with forloop.counter0 as i%}
             <div class="trip">
                 <div class="trip-header">
                     {% load trip_tags %}
-                    <b class="trip-title">{% tripName trip %}</b>
+                    <b id= "tripName{{i}}"class="trip-title">{% tripName trip %}</b>
                     <div hidden>{% tripID trip %}</div>
                     <!-- <input type="date"> -->
                 </div>
                 {% load trip_tags %}
+                <div id="tripIDMAAM{{i}}" hidden>{% tripID trip %}</div>
                 <b class="trip-destination">{% tripDestination trip %}</b>
+                <b  class = "trip-destination"> Add Friends to Your Trip!</b>
+                <input id="add-friends-text-box{{i}}" class="addTripTextBox" type="text">
+                <!-- <b>Date:</b> -->
+                <!-- <input class="addTripTextBox" type="date"> -->
+                <button id="add-friend-button{{i}}" value="Add a Friend" class="add-trip-label" placeholder= "Enter a name..." onclick="addFriend({{i}},document.getElementById('tripIDMAAM{{i}}').textContent)">Add a Friend</button>
+                
+                <ul id="friends-list{{i}}">
+                    {% getPeopleOnTheTrip trip as peopleOnTheTrip %}
+                    {% for person in peopleOnTheTrip %}
+                     <li>{{ person }}</li>
+                     {% endfor %}
+                </ul>
+
+                <b  class = "trip-destination"> Task I am responsible for...</b>
+                <input id="add-task-text-box{{i}}" class="addTripTextBox" type="text">
+                <!-- <b>Date:</b> -->
+                <!-- <input class="addTripTextBox" type="date"> -->
+                <button id="add-task-button" value="Add a Task" class="add-trip-label" placeholder= "Enter a task..." onclick="addTask({{i}}, document.getElementById('tripIDMAAM{{i}}').textContent)">Assign Task</button>
+                
+
                 <form action="/media-uploads/{% tripID trip %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <label class="add-trip-label">Add Your Trip Photos!:</label>
@@ -50,6 +72,7 @@
                         {% endfor %}
                 </div>
             </div>
+            {% endwith %}
             {% endfor %}
             <div id="addTripCard" class="dropdown-hidden">
                 <b>Trip Name:</b>
