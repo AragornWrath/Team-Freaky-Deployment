@@ -497,8 +497,13 @@ def add_friend(request: HttpRequest, trip_id):
     tripCopy = trip.copy()
     peopleOnTheTrip = trip.get("peopleOnTheTrip", [])
     peopleOnTheTripCopy = peopleOnTheTrip.copy()
-   
-    if friend_name not in peopleOnTheTripCopy and friend_name != request.COOKIES.get('username', None):
+
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
+
+    if friend_name not in peopleOnTheTripCopy and user["username"] != friend_name:
         peopleOnTheTripCopy.append(friend_name)
         tripCopy["peopleOnTheTrip"] = peopleOnTheTripCopy
         trips.replace_one(trip, tripCopy)
@@ -519,7 +524,12 @@ def add_task(request: HttpRequest, trip_id):
     if len(task_name)==0:
         return response
     # add the appriopraiate username
-    task_name= task_name +" => "+ request.COOKIES.get('username', None)
+    token = 'NULL'
+    if ('token' in request.COOKIES) :
+        token = request.COOKIES['token']
+    user = findUser(token)
+
+    task_name= task_name +" => "+ user["username"]
     
     tripCopy = trip.copy()
     tasksOfTheTrip = trip.get("tasks", [])
