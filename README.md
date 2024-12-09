@@ -8,13 +8,12 @@ Team freaky so chill
 * Login and logout models
 * Convert the mongo code to sqlite code
 
-# Trip Notification Feature
+# Project part 3 object 3:
+# Email Security Notification Feature
 
-This feature enables users to receive email alerts when a friend adds them to a trip on our platform. Once a user is added to a trip, our system automatically generates an email notification to inform them about the addition. 
-
-This ensures seamless communication and collaboration among trip participants, enhancing the overall trip planning experience.
+This feature enables users to receive email alerts when there are too many incorrect login attempts on their account.
 
 
 **In order to use this feature:**
+Create an account with a valid username, password, and email address. Go to the login page. Try to login with your correct name but incorrect password 5 times. On the fifth time an email will be sent to the email address associated with your account alerting you of the potential security risk on your account.
 
-Make sure that you are logged in with a valid username. After this, navigate to “Trips” page. On the “Trips” page, you will see all the trips that you have created as a user and all the trips you have been added to. Each trip item has a field to add friends. To add friends to the trip, type your friend’s username - In order for this feature to work accordingly, you will have to type in a valid username.- in this field, and click on the “Add a Friend” button below. If such an action is successful, we will notify the user you added to the trip that they have been added to a trip, and after refreshing the page, your friend’s username will show up on the trip item. 
