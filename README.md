@@ -7,7 +7,7 @@ Team freaky so chill
 * Add people to trip: Those people will have it on their home page
 * Login and logout models
 * Convert the mongo code to sqlite code
-
+outofthegc.com
 # Project part 3 object 3:
 # Email Security Notification Feature
 
