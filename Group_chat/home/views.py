@@ -266,10 +266,11 @@ def register(request: HttpRequest):
         body = body.split(b'&')         #Assuming the body is urlencoded
         username = html.escape(body[1].split(b'=')[1].decode())
         password = html.escape(body[2].split(b'=')[1].decode())
+        email = (body[3].split(b'=')[1].decode()).replace('%40', '@')
         query = {'username' : username}
         newAcc = accounts.find_one(query)
 
-        if (username == "" or password == "") :
+        if (username == "" or password == "" or email == "") :
             return invalidRegister()
         
         if (newAcc != None) :
@@ -282,8 +283,10 @@ def register(request: HttpRequest):
         newEntry = {
             'username' : username,
             'password' : hashed,
+            'email': email,
             'salt' : salt,
-            'token' : None
+            'token' : None,
+            'invalid_entries': 0
         }
         accounts.insert_one(newEntry)
     
@@ -301,6 +304,7 @@ def login(request: HttpRequest):
         if username == "" or password == "" :
             return invalidLogin()
         entry = accounts.find_one({'username': username})
+        print('entry=', entry, flush=True)
         print("Finding User")
         if entry != None :
             print("Found User")
@@ -318,11 +322,31 @@ def login(request: HttpRequest):
                 print('SUCCESS')
                 redirect.set_cookie('token', token, httponly=True)
                 redirect.set_cookie('username', username, httponly=True)
+                entry['invalid_entries'] = 0
                 return redirect
             else:
+                entry_copy = entry.copy()
+                entry_copy['invalid_entries'] = entry['invalid_entries'] + 1
+                if entry_copy['invalid_entries'] % 5 == 0 and entry_copy["invalid_entries"] != 0:
+                    sendEmail(entry['email'])
+                    print(entry['email'], flush=True)
+                    print("email sent!", flush=True)
+                accounts.replace_one(entry, entry_copy)
                 return invalidLogin()
         else:
             return invalidLogin()
+        
+import smtplib
+def sendEmail(email):
+    print('hello', flush=True)
+    print("email: ", email, flush=True)
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login("outofthegc.com@gmail.com", "ajvr gzva ljmj qcph")
+    message = "There is suspicious activity on your outofthegc.com account! Somebody keeps trying to log in! Make sure to use complex and never repeat passwords in the future."
+    s.sendmail("outofthegc.com@gmail.com", email, message)
+    s.quit()
+    return
 
 def invalidLogin() :
     #print("Invalid")
